@@ -1,11 +1,13 @@
 <?php
 
 namespace app\controllers;
+
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
+use yii\helpers\VarDumper;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use RestCord\DiscordClient;
@@ -61,8 +63,14 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $discord = new DiscordClient(['token' => 'Nzg0NzUzMzQ0NDY3NTY2NjAy.X8t4gQ.QdkOSm4Gsc9iFkY4PUNaamQskgo']);
-        return var_dump($discord);
+        $token = fopen('../token.txt', 'r');
+        $token = fgets($token);
+        $discord = new DiscordClient([
+            'token' => $token,
+            'tokenType' => 'Bot'
+        ]);
+
+        return VarDumper::dump($discord->oauth2->getCurrentApplicationInformation());
         $arrIn = [
             'Heading',
             'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
@@ -70,8 +78,8 @@ class SiteController extends Controller
                     ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
                     fugiat nulla pariatur.'
         ];
-        $arr = [$arrIn,$arrIn,$arrIn,$arrIn];
-        return $this->render('index',[
+        $arr = [$arrIn, $arrIn, $arrIn, $arrIn];
+        return $this->render('index', [
             'arr' => $arr,
         ]);
     }
