@@ -69,8 +69,9 @@ class SiteController extends Controller
             'token' => $token,
             'tokenType' => 'Bot'
         ]);
-
-        return VarDumper::dump($discord->oauth2->getCurrentApplicationInformation());
+//        return var_dump($discord->user->getUser(['user.id'=>361154033362403338]));
+//        return var_dump($discord->guild->listGuildMembers(['guild.id' => 547094388539392000]));
+            return var_dump($discord->user->getCurrentUserGuilds());
         $arrIn = [
             'Heading',
             'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et

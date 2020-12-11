@@ -7,6 +7,7 @@ $form = ActiveForm::begin([
     'id' => 'login-form',
     'options' => ['class' => 'form-horizontal'],
 ]) ?>
+    <div>Succses</div>
 <?= $form->field($model, 'username') ?>
 <?= $form->field($model, 'password') ?>
 
