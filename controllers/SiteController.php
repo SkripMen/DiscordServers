@@ -91,38 +91,32 @@ class SiteController extends Controller
 //        return $this->render('index', [
 //            'arr' => $arr,
 //        ]);
+//        return 1;
         $config = [
 
-            'callback' => 'http://localhost/path/to/this/script.php',
+            'callback' => 'http://server-discord.ru/',
 
             'keys' => [
-                'id' => '',
-                'secret' => ''
+                'id' => '784753344467566602',
+                'secret' => '7nDcOWEc-YflFDZfbZ47DA7s3PYkqAyA'
             ],
-
-            'scope' => 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
-
-
-            'endpoints' => [
-                'api_base_url' => 'https://www.googleapis.com/plus/v1/',
-                'authorize_url' => 'https://accounts.google.com/o/oauth2/auth',
-                'access_token_url' => 'https://accounts.google.com/o/oauth2/token',
-            ],
-
-            'authorize_url_parameters' => [
-                'approval_prompt' => 'force',
-                'access_type' => 'offline',
-            ],
-
-            'debug_mode' => 'debug',
-            'debug_file' => __FILE__ . '.log',
-
+            'scope' => 'guilds',
         ];
         $adapter = new Discord($config);
         $adapter->authenticate();
         $accessToken = $adapter->getAccessToken();
+
+        $adapter->setAccessToken($accessToken);
         $userProfile = $adapter->getUserProfile();
+        $discord = new DiscordClient([
+            'token' => $accessToken['access_token'],
+            'tokenType' => 'OAuth'
+        ]);
+        return var_dump($discord->user->getCurrentUser()) . '<br>' . var_dump($discord->user->getCurrentUserGuilds()) . '<br>' . var_dump($userProfile);
+
         return var_dump($accessToken) . '<br>' . var_dump($userProfile);
+//https://discord.com/oauth2/authorize?response_type=code&client_id=784753344467566602&redirect_uri=http%3A%2F%2Fserver-discord.ru%2F&scope=identify+email&state=HA-O7UPSKFRT16HBMI9C4Y5AQN3ZWJGD2X0V8LE
+//https://discord.com/api/oauth2/authorize?client_id=784753344467566602&redirect_uri=http%3A%2F%2Fserver-discord.ru%2F&response_type=code&scope=identify%20email%20guilds
     }
 
     /**
