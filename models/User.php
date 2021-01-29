@@ -2,6 +2,12 @@
 
 namespace app\models;
 
+use Yii;
+use yii\base\NotSupportedException;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
+
 class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
 {
     public $id;
@@ -27,6 +33,34 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
         ],
     ];
 
+    /**
+     * @return string
+     */
+    public static function tableName()
+    {
+        return 'users';
+    }
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+        ];
+    }
+
+    /**
+     * @return array[]
+     */
+    public function rules()
+    {
+        return [
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+        ];
+    }
 
     /**
      * {@inheritdoc}

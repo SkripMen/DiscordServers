@@ -7,13 +7,12 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
-use yii\helpers\VarDumper;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use RestCord\DiscordClient;
 use Hybridauth\Provider\Discord;
 
-class SiteController extends Controller
+class MainController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -65,58 +64,60 @@ class SiteController extends Controller
     public function actionIndex()
     {
 //        return phpinfo();
-        $token = fopen('../token.txt', 'r');
-        $token = fgets($token);
+//        $token = fopen('../token.txt', 'r');
+//        $token = fgets($token);
+
 //        $discord = new DiscordClient([
 //            'token' => $token,
 //            'tokenType' => 'Bot'
 //        ]);
-////        return var_dump($discord->user->getUser(['user.id'=>361154033362403338]));
-////        return var_dump($discord->guild->listGuildMembers(['guild.id' => 547094388539392000]));
+//        return var_dump($discord->user->getUser(['user.id'=>361154033362403338]));
+//        return var_dump($discord->guild->listGuildMembers(['guild.id' => 547094388539392000]));
 //        $guild = $discord->guild->getGuild(['guild.id' => $discord->user->getCurrentUserGuilds()[0]->id]);
 //            return var_dump($discord->guild->getGuildWidgetImage(['guild.id' => $guild->id, 'style' => 'shield']));
-////            return var_dump($discord->guild->listGuildMembers([
-////                'guild.id'=>$discord->user->getCurrentUserGuilds()[1]->id,
-////                'limit' => 2,
-////                'after' => 1
-////            ]));
-//        $arrIn = [
-//            'Heading',
-//            'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-//                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-//                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-//                    fugiat nulla pariatur.'
-//        ];
-//        $arr = [$arrIn, $arrIn, $arrIn, $arrIn];
-//        return $this->render('index', [
-//            'arr' => $arr,
-//        ]);
-//        return 1;
-        $config = [
-
-            'callback' => 'http://server-discord.ru/',
-
-            'keys' => [
-                'id' => '784753344467566602',
-                'secret' => '7nDcOWEc-YflFDZfbZ47DA7s3PYkqAyA'
-            ],
-            'scope' => 'guilds',
+//            return var_dump($discord->guild->listGuildMembers([
+//                'guild.id'=>$discord->user->getCurrentUserGuilds()[1]->id,
+//                'limit' => 2,
+//                'after' => 1
+//            ]));
+        $arrIn = [
+            'Heading',
+            'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
+             dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+             ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+             fugiat nulla pariatur.'
         ];
-        $adapter = new Discord($config);
-        $adapter->authenticate();
-        $accessToken = $adapter->getAccessToken();
-
-        $adapter->setAccessToken($accessToken);
-        $userProfile = $adapter->getUserProfile();
-        $discord = new DiscordClient([
-            'token' => $accessToken['access_token'],
-            'tokenType' => 'OAuth'
+        $arr = [$arrIn, $arrIn, $arrIn, $arrIn, $arrIn, $arrIn];
+        return $this->render('index', [
+            'arr' => $arr,
         ]);
-        return var_dump($discord->user->getCurrentUser()) . '<br>' . var_dump($discord->user->getCurrentUserGuilds()) . '<br>' . var_dump($userProfile);
+//        return 1;
 
-        return var_dump($accessToken) . '<br>' . var_dump($userProfile);
-//https://discord.com/oauth2/authorize?response_type=code&client_id=784753344467566602&redirect_uri=http%3A%2F%2Fserver-discord.ru%2F&scope=identify+email&state=HA-O7UPSKFRT16HBMI9C4Y5AQN3ZWJGD2X0V8LE
-//https://discord.com/api/oauth2/authorize?client_id=784753344467566602&redirect_uri=http%3A%2F%2Fserver-discord.ru%2F&response_type=code&scope=identify%20email%20guilds
+
+//        $config = [
+//
+//            'callback' => 'http://server-discord.ru/',
+//
+//            'keys' => [
+//                'id' => '784753344467566602',
+//                'secret' => '7nDcOWEc-YflFDZfbZ47DA7s3PYkqAyA'
+//            ],
+//            'scope' => 'guilds',
+//        ];
+//        $adapter = new Discord($config);
+//        $adapter->authenticate();
+//        $accessToken = $adapter->getAccessToken();
+//
+//        $adapter->setAccessToken($accessToken);
+//        $userProfile = $adapter->getUserProfile();
+//        $discord = new DiscordClient([
+//            'token' => $accessToken['access_token'],
+//            'tokenType' => 'OAuth'
+//        ]);
+//        return var_dump($discord->user->getCurrentUser()) . '<br>' . var_dump($discord->user->getCurrentUserGuilds()) . '<br>' . var_dump($userProfile);
+//
+//        return var_dump($accessToken) . '<br>' . var_dump($userProfile);
+
     }
 
     /**
