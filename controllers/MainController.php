@@ -2,6 +2,10 @@
 
 namespace app\controllers;
 
+use app\component\repository\GuildsRepository;
+use app\entity\Guilds;
+use app\entity\Users;
+use Hybridauth\Exception\AuthorizationDeniedException;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -80,14 +84,33 @@ class MainController extends Controller
 //                'limit' => 2,
 //                'after' => 1
 //            ]));
-        $arrIn = [
-            'Heading',
-            'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-             dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-             ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-             fugiat nulla pariatur.'
-        ];
-        $arr = [$arrIn, $arrIn, $arrIn, $arrIn, $arrIn, $arrIn];
+
+//        return var_dump(Users::find()->where(['discord_id' => 222])->one());
+        $arr = [];
+        if (!Yii::$app->user->isGuest) {
+//            $discord = new DiscordClient([
+//                'token' => Yii::$app->user->identity->getAuthKey(),
+//                'tokenType' => 'OAuth'
+//            ]);
+//            $discord_bot = new DiscordClient([
+//                'token' => 'Nzg0NzUzMzQ0NDY3NTY2NjAy.X8t4gQ.rXAqsa_YfyaOgFrdpbsTyrzMW24',
+//                'tokenType' => 'Bot'
+//            ]);
+//            https://cdn.discordapp.com/icons/252378116998168577/8c9c81c0a463a28c7acbaa44c35aa301.png
+//        return var_dump($discord->user->getCurrentUserGuilds());
+
+            foreach (Guilds::find()->all() as $key => $value) {
+                $arrIn[0] = $value->name;
+                $arrIn[1] = $value->discord_id;
+                $arrIn[2] = $value->icon_url;
+                $arr[] = $arrIn;
+
+            }
+//            var_dump($discord->guild->getGuild(['guild.id' => 785580742612484146])->owner_id);
+//            var_dump($discord_bot->user->getCurrentUserGuilds());
+//            var_dump($discord_bot->guild->getGuildChannels(['guild.id' => 547094388539392000]));
+//            var_dump($discord_bot->channel->createMessage(['channel.id' => 550372544809795594, 'content' => 'Проба пера']));
+        }
         return $this->render('index', [
             'arr' => $arr,
         ]);
@@ -127,16 +150,37 @@ class MainController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
+        try {
+            if (!Yii::$app->user->isGuest) {
+                return $this->goHome();
+            }
+
+            $config = [
+                'callback' => 'http://server-discord.ru/main/login',
+                'keys' => [
+                    'id' => '784753344467566602',
+                    'secret' => '7nDcOWEc-YflFDZfbZ47DA7s3PYkqAyA'
+                ],
+                'scope' => 'guilds',
+            ];
+            $adapter = new Discord($config);
+            $adapter->authenticate();
+            $accessToken = $adapter->getAccessToken();
+            $adapter->setAccessToken($accessToken);
+        } catch (AuthorizationDeniedException $e) {
             return $this->goHome();
         }
-
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        if ($model->login($accessToken['access_token'])) {
+            $discord = new DiscordClient([
+                'token' => Yii::$app->user->identity->getAuthKey(),
+                'tokenType' => 'OAuth'
+            ]);
+            GuildsRepository::createGuildsByRestCordUser($discord->user->getCurrentUserGuilds());
             return $this->goBack();
         }
 
-        $model->password = '';
+
         return $this->render('login', [
             'model' => $model,
         ]);

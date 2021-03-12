@@ -15,12 +15,13 @@ class m210112_184939_DiscordBase extends Migration
     {
         $this->createTable('guilds', [
             'id' => 'pk',
-            'discord_id' => 'varchar(128)',
+            'discord_id' => 'varchar(128) NOT NULL',
             'name' => 'varchar(128) NOT NULL',
-            'user_id' => 'int(11) NOT NULL',
+            'owner_discord_id' => 'varchar(128)',
+            'icon_url' => 'varchar(255)',
         ]);
         $this->createTable('users', [
-            'id' => 'pk',
+            'id' => 'pk AUTO_INCREMENT',
             'discord_id' => 'varchar(128)',
             'email' => 'varchar(128)',
             'name' => 'varchar(64) NOT NULL',
