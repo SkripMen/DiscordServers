@@ -1,6 +1,7 @@
 <?php
 
 /* @var $this \yii\web\View */
+
 /* @var $content string */
 
 use app\widgets\Alert;
@@ -35,22 +36,25 @@ AppAsset::register($this);
             'class' => 'navbar-inverse',
         ],
     ]);
+    $items = [];
+    if (!Yii::$app->user->isGuest){
+        $items[] = ['label' => 'Профиль', 'url' => ['/main/profile']];
+    }
+    $items[] = Yii::$app->user->isGuest ? (
+    ['label' => 'Вход', 'url' => ['/main/login']]
+    ) : (
+        '<li>'
+        . Html::beginForm(['/main/logout'], 'post')
+        . Html::submitButton(
+            'Выйти (' . Yii::$app->user->identity->name . ')',
+            ['class' => 'btn btn-link logout']
+        )
+        . Html::endForm()
+        . '</li>'
+    );
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => [
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/main/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/main/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->name . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
-        ],
+        'items' => $items,
     ]);
     NavBar::end();
     ?>

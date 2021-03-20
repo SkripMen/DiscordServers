@@ -18,6 +18,7 @@ class User extends BaseObject implements IdentityInterface
     public $email;
     public $avatar_url;
     public $access_key;
+    public $is_admin;
 
     /**
      * @return string

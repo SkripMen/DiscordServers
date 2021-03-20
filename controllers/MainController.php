@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\component\repository\GuildsRepository;
 use app\entity\Guilds;
 use app\entity\Users;
+use app\entity\UserToGuilds;
 use Hybridauth\Exception\AuthorizationDeniedException;
 use Yii;
 use yii\filters\AccessControl;
@@ -111,6 +112,7 @@ class MainController extends Controller
 //            var_dump($discord_bot->guild->getGuildChannels(['guild.id' => 547094388539392000]));
 //            var_dump($discord_bot->channel->createMessage(['channel.id' => 550372544809795594, 'content' => 'Проба пера']));
         }
+
         return $this->render('index', [
             'arr' => $arr,
         ]);
@@ -176,7 +178,7 @@ class MainController extends Controller
                 'token' => Yii::$app->user->identity->getAuthKey(),
                 'tokenType' => 'OAuth'
             ]);
-            GuildsRepository::createGuildsByRestCordUser($discord->user->getCurrentUserGuilds());
+            GuildsRepository::createGuildsByRestCordUser($discord->user->getCurrentUserGuilds(), Yii::$app->user->id);
             return $this->goBack();
         }
 
@@ -203,16 +205,18 @@ class MainController extends Controller
      *
      * @return Response|string
      */
-    public function actionContact()
+    public function actionProfile()
     {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
+        if (Yii::$app->user->isGuest) {
+            return $this->goHome();
         }
-        return $this->render('contact', [
-            'model' => $model,
+        $user = Yii::$app->user->identity;
+        return $this->render('profile',[
+            'ava' => $user->avatar_url,
+            'name' => $user->name,
+            'email' => $user->email,
+            'guilds' => GuildsRepository::getUserAllGuildsByToken(Yii::$app->user->identity->getAuthKey()),
+            'added_guilds' => [],
         ]);
     }
 
@@ -221,8 +225,8 @@ class MainController extends Controller
      *
      * @return string
      */
-    public function actionAbout()
+    public function actionAddToCreated()
     {
-        return $this->render('about');
+//        return $this->goHome();
     }
 }

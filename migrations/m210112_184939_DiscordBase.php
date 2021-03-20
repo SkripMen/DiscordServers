@@ -14,7 +14,7 @@ class m210112_184939_DiscordBase extends Migration
     public function safeUp()
     {
         $this->createTable('guilds', [
-            'id' => 'pk',
+            'id' => 'pk AUTO_INCREMENT',
             'discord_id' => 'varchar(128) NOT NULL',
             'name' => 'varchar(128) NOT NULL',
             'owner_discord_id' => 'varchar(128)',
@@ -27,6 +27,7 @@ class m210112_184939_DiscordBase extends Migration
             'name' => 'varchar(64) NOT NULL',
             'access_key' => 'varchar(255)',
             'avatar_url' => 'varchar(255)',
+            'is_admin' => $this->integer()->defaultValue(0)
         ]);
     }
 

@@ -13,6 +13,7 @@ use yii\db\ActiveRecord;
  * @param string $name
  * @param string $access_key
  * @param string $avatar_url
+ * @param int $is_admin
  * @package app\entity
  */
 class Users extends ActiveRecord
